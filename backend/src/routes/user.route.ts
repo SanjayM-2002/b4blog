@@ -54,9 +54,6 @@ userRouter.post('/signup', async (c) => {
       email: newUser.email,
       token: token,
     });
-
-    c.status(201);
-    return c.json(newUser);
   } catch (error) {
     c.status(500);
     c.json({ error: 'Server error' });
@@ -90,6 +87,38 @@ userRouter.post('/login', async (c) => {
       c.status(403);
       return c.json({ error: 'Incorrect password' });
     }
+    const token = await sign({ id: isUserExists.id }, c.env.JWT_SECRET);
+    c.status(201);
+    return c.json({
+      id: isUserExists.id,
+      name: isUserExists.name,
+      email: isUserExists.email,
+      token: token,
+    });
+  } catch (error) {
+    c.status(500);
+    c.json({ error: 'Server error' });
+  }
+});
+
+userRouter.get('/getUser/:id', async (c) => {
+  const prisma = new PrismaClient({
+    datasourceUrl: c.env.DATABASE_URL,
+  }).$extends(withAccelerate());
+  const userId = c.req.param('id');
+  try {
+    const isUserExists = await prisma.user.findUnique({
+      where: {
+        id: userId,
+      },
+    });
+    if (!isUserExists) {
+      c.status(403);
+      return c.json({ error: 'Invalid userid' });
+    }
+    const { password, ...rest } = isUserExists;
+    c.status(200);
+    return c.json(rest);
   } catch (error) {
     c.status(500);
     c.json({ error: 'Server error' });
