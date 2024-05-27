@@ -39,18 +39,16 @@ userRouter.post('/signup', async (c) => {
     }
     const newUser = await prisma.user.create({
       data: {
-        name: zodResponse.data.name,
+        fullname: zodResponse.data.fullname,
         email: zodResponse.data.email,
         password: zodResponse.data.password,
       },
     });
-    console.log('check 2');
-    console.log('jwt secret is: ', c.env.JWT_SECRET);
     const token = await sign({ id: newUser.id }, c.env.JWT_SECRET);
     c.status(201);
     return c.json({
       id: newUser.id,
-      name: newUser.name,
+      name: newUser.fullname,
       email: newUser.email,
       token: token,
     });
@@ -91,7 +89,7 @@ userRouter.post('/login', async (c) => {
     c.status(201);
     return c.json({
       id: isUserExists.id,
-      name: isUserExists.name,
+      name: isUserExists.fullname,
       email: isUserExists.email,
       token: token,
     });

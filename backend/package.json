@@ -6,7 +6,7 @@
   "dependencies": {
     "@prisma/client": "^5.14.0",
     "@prisma/extension-accelerate": "^1.0.0",
-    "@sanjaym2002/b4blog-common": "^1.0.0",
+    "@sanjaym2002/b4blog-common": "^1.0.3",
     "hono": "^4.3.8",
     "prisma": "^5.14.0"
   },

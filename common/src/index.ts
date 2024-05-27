@@ -1,7 +1,7 @@
 import { z } from 'zod';
 
 export const signupInput = z.object({
-  name: z.string({ message: 'Name cannot be empty' }),
+  fullname: z.string({ message: 'fullname cannot be empty' }),
   email: z.string().min(1).email({ message: 'This is not a valid email' }),
   password: z
     .string()
@@ -16,8 +16,11 @@ export const loginInput = z.object({
 });
 
 export const createBlogInput = z.object({
-  title: z.string().min(1).email({ message: 'This is not a valid title' }),
-  content: z.string().min(1).email({ message: 'This is not a valid content' }),
+  title: z.string().min(1).max(50, { message: 'This is not a valid title' }),
+  content: z
+    .string()
+    .min(1)
+    .max(250, { message: 'This is not a valid content' }),
 });
 
 export const updateBlogInput = z.object({
