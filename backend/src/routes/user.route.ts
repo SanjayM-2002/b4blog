@@ -54,7 +54,7 @@ userRouter.post('/signup', async (c) => {
     });
   } catch (error) {
     c.status(500);
-    c.json({ error: 'Server error' });
+    return c.json({ error: 'Server error' });
   }
 });
 
@@ -95,10 +95,11 @@ userRouter.post('/login', async (c) => {
     });
   } catch (error) {
     c.status(500);
-    c.json({ error: 'Server error' });
+    return c.json({ error: 'Server error' });
   }
 });
 
+//get user by id
 userRouter.get('/getUser/:id', async (c) => {
   const prisma = new PrismaClient({
     datasourceUrl: c.env.DATABASE_URL,
@@ -119,6 +120,6 @@ userRouter.get('/getUser/:id', async (c) => {
     return c.json(rest);
   } catch (error) {
     c.status(500);
-    c.json({ error: 'Server error' });
+    return c.json({ error: 'Server error' });
   }
 });
