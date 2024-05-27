@@ -2,6 +2,7 @@ import { PrismaClient } from '@prisma/client/edge';
 import { withAccelerate } from '@prisma/extension-accelerate';
 import { loginInput, signupInput } from '@sanjaym2002/b4blog-common';
 import { Hono } from 'hono';
+import bcrypt from 'bcryptjs';
 import { jwt, sign } from 'hono/jwt';
 
 export const userRouter = new Hono<{
@@ -37,11 +38,14 @@ userRouter.post('/signup', async (c) => {
       c.status(401);
       return c.json({ error: 'User with this email already exists' });
     }
+    console.log('zod response is: ', zodResponse.data);
+    const hashedPassword = await bcrypt.hash(zodResponse.data.password, 10);
+    console.log('hash: ', hashedPassword);
     const newUser = await prisma.user.create({
       data: {
         fullname: zodResponse.data.fullname,
         email: zodResponse.data.email,
-        password: zodResponse.data.password,
+        password: hashedPassword,
       },
     });
     const token = await sign({ id: newUser.id }, c.env.JWT_SECRET);
@@ -79,8 +83,10 @@ userRouter.post('/login', async (c) => {
       c.status(403);
       return c.json({ error: 'User with this email does not exist' });
     }
-    const isPasswordCorrect =
-      isUserExists.password === zodResponse.data.password;
+    const isPasswordCorrect = await bcrypt.compare(
+      zodResponse.data.password,
+      isUserExists.password
+    );
     if (!isPasswordCorrect) {
       c.status(403);
       return c.json({ error: 'Incorrect password' });
