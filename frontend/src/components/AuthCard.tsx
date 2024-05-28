@@ -35,7 +35,7 @@ const AuthCard = ({ type }: { type: string }) => {
       console.log('data is: ', data);
       const jwt = data.token;
       localStorage.setItem('token', jwt);
-      navigate('/blog');
+      navigate('/blogs');
     } catch (error) {
       console.log('error is: ', error);
       if (axios.isAxiosError(error) && error.response) {
