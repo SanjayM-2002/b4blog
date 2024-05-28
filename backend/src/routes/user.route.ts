@@ -24,6 +24,7 @@ userRouter.post('/signup', async (c) => {
   const body = await c.req.json();
 
   try {
+    console.log('body is: ', body);
     const zodResponse = signupInput.safeParse(body);
     if (!zodResponse.success) {
       c.status(411);
